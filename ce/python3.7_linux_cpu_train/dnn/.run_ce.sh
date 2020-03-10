@@ -23,3 +23,12 @@ export NUM_THREADS=8
 
 FLAGS_benchmark=true  python train.py --is_local 1 --cloud_train 0 --train_data_path data/raw/train.txt --enable_ce >log_cpu8thread8
 cat log_cpu8thread8 | python _ce.py
+
+#infer
+model='dnn_infer'
+python infer.py --model_path models/pass-0/ --data_path data/raw/train.txt >dnn_infer.log 2>&1
+if [ $? -ne 0 ];then
+	echo -e "${model},FAIL"
+else
+	echo -e "${model},SUCCESS"
+fi
