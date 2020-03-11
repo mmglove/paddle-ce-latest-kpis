@@ -17,10 +17,4 @@ export CUDA_VISIBLE_DEVICES=$cudaid
 FLAGS_benchmark=true  python -u train.py --config_path 'data/config.txt' --train_dir 'data/paddle_train.txt' --batch_size 32 --epoch_num 1 --use_cuda 1 --enable_ce --batch_num 10000 1> log_4cards
 cat log_4cards |  python _ce.py
 
-model=din_infer
-CUDA_VISIBLE_DEVICES=0 python infer.py --model_path 'din_amazon/global_step_50000' --test_path 'data/paddle_test.txt' --use_cuda 1 >din_infer_gpu.log 2>&1
-if [ $? -ne 0 ];then
-	echo -e "${model},FAIL"
-else
-	echo -e "${model},SUCCESS"
-fi
+# no model save because batch_num too small , so no infer

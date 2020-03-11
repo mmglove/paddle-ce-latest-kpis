@@ -12,7 +12,7 @@ cd ${current_dir}/slim/quantization
 if [ -d 'checkpoints' ]; then
     rm -rf checkpoints
 fi
-sed -i "s/end_epoch: 4/end_epoch: 1/g" yolov3_mobilenet_v1_slim.yaml
+sed -i "s/end_epoch: 4/end_epoch: 0/g" yolov3_mobilenet_v1_slim.yaml
 sed -i "s/epoch: 5/epoch: 1/g" yolov3_mobilenet_v1_slim.yaml
 python compress.py \
     -s yolov3_mobilenet_v1_slim.yaml  \

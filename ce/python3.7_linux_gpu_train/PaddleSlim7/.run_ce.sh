@@ -25,7 +25,9 @@ mkdir logs && cd logs
 mkdir SUCCESS
 mkdir FAIL
 log_path=${current_dir}"/logs"
+
 # 1 uniform_prune
+cd ${current_dir}
 export FLAGS_eager_delete_tensor_gb=0.0
 export CUDA_VISIBLE_DEVICES=7
 if [ -d 'checkpoints' ]; then
@@ -102,7 +104,7 @@ cd ${current_dir}/classification/quantization
 if [ -d 'checkpoints' ]; then
     rm -rf checkpoints
 fi
-sed -i "s/end_epoch: 29/end_epoch: 1/g" configs/mobilenet_v2.yaml
+sed -i "s/end_epoch: 29/end_epoch: 0/g" configs/mobilenet_v2.yaml
 sed -i "s/epoch: 30/epoch: 1/g" configs/mobilenet_v2.yaml
 python compress.py \
     --model "MobileNetV2" \
@@ -119,13 +121,13 @@ quan_model=mobilenet_v2
 time (python freeze.py \
         --model_path ./checkpoints/${quan_model}/0/eval_model \
         --weight_quant_type  abs_max\
-        --save_path ./freeze/${quan_model} >${log_path}/${quan_model}.log) >>${log_path}/${quan_model}.log 2>&1
+        --save_path ./freeze/${quan_model} >${log_path}/class_quan_freeze_${quan_model}.log) >>${log_path}/class_quan_freeze_${quan_model}.log 2>&1
     if [ $? -ne 0 ];then
-	    mv ${log_path}/${quan_model}.log ${log_path}/FAIL/${quan_model}.log
-	    echo -e "${quan_model},freeze,FAIL" >>${result_path}/result.log;
+	    mv ${log_path}/class_quan_freeze_${quan_model}.log ${log_path}/FAIL/class_quan_freeze_${quan_model}.log
+	    echo -e "class_quan_freeze_${quan_model},freeze,FAIL" >>${result_path}/result.log;
     else
-	    mv ${log_path}/${quan_model}.log ${log_path}/SUCCESS/${quan_model}.log
-	    echo -e "${quan_model},freeze,SUCCESS" >>${result_path}/result.log
+	    mv ${log_path}/class_quan_freeze_${quan_model}.log ${log_path}/SUCCESS/class_quan_freeze_${quan_model}.log
+	    echo -e "class_quan_freeze_${quan_model},freeze,SUCCESS" >>${result_path}/result.log
     fi
 cd ${current_dir}/classification
     model=slim_quan_classification_${quan_model}_infer

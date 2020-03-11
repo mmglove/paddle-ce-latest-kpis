@@ -10,7 +10,7 @@ FLAGS_benchmark=true  python train.py --train_dir train_big_data --vocab_path vo
 cat log_cpu | python _ce.py
 
 model='ssr_infer'
-python infer.py --test_dir test_big_data --vocab_path vocab_big.txt --use_cuda 0 --batch_size 50 --model_dir model_output >ssr_infer.log 2>&1
+python infer.py --test_dir test_big_data --vocab_path vocab_big.txt --use_cuda 0 --batch_size 50 --model_dir model_output --last_index 1 >ssr_infer.log 2>&1
 if [ $? -ne 0 ];then
 	echo -e "${model},FAIL"
 else

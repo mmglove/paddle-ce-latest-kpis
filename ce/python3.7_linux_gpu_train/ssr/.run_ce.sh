@@ -17,7 +17,7 @@ FLAGS_benchmark=true  python train.py --train_dir train_big_data --vocab_path vo
 cat log_4cards | python _ce.py
 
 model='ssr_infer'
-CUDA_VISIBLE_DEVICES=0 python infer.py --test_dir test_big_data --vocab_path vocab_big.txt --use_cuda 1 --batch_size 50 --model_dir model_output >ssr_infer_gpu.log 2>&1
+CUDA_VISIBLE_DEVICES=0 python infer.py --test_dir test_big_data --vocab_path vocab_big.txt --use_cuda 1 --batch_size 50 --model_dir model_output --last_index 1 >ssr_infer_gpu.log 2>&1
 if [ $? -ne 0 ];then
 	echo -e "${model},FAIL"
 else
