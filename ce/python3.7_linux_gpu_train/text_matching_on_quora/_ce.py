@@ -9,11 +9,11 @@ from kpi import DurationKpi
 from kpi import AccKpi
 
 cdssmNet_each_pass_duration_card1_kpi = DurationKpi('cdssmNet_each_pass_duration_card1', 0.03, 0, actived=True)
-cdssmNet_train_avg_cost_card1_kpi = CostKpi('cdssmNet_train_avg_cost_card1', 0.01, 0, actived=True)
+cdssmNet_train_avg_cost_card1_kpi = CostKpi('cdssmNet_train_avg_cost_card1', 0.02, 0, actived=True)
 cdssmNet_train_avg_acc_card1_kpi = AccKpi('cdssmNet_train_avg_acc_card1', 0.01, 0, actived=True)
 
 DecAttNet_each_pass_duration_card1_kpi = DurationKpi('DecAttNet_each_pass_duration_card1', 0.04, 0, actived=True)
-DecAttNet_train_avg_cost_card1_kpi = CostKpi('DecAttNet_train_avg_cost_card1', 0.02, 0, actived=True)
+DecAttNet_train_avg_cost_card1_kpi = CostKpi('DecAttNet_train_avg_cost_card1', 0.03, 0, actived=True)
 DecAttNet_train_avg_acc_card1_kpi = AccKpi('DecAttNet_train_avg_acc_card1', 0.02, 0, actived=True)
 
 InferSentNet_v1_each_pass_duration_card1_kpi = DurationKpi('InferSentNet_v1_each_pass_duration_card1', 0.01, 0,
@@ -28,7 +28,7 @@ InferSentNet_v2_train_avg_acc_card1_kpi = AccKpi('InferSentNet_v2_train_avg_acc_
 
 SSENet_each_pass_duration_card1_kpi = DurationKpi('SSENet_each_pass_duration_card1', 0.01, 0, actived=True)
 SSENet_train_avg_cost_card1_kpi = CostKpi('SSENet_train_avg_cost_card1', 0.01, 0, actived=True)
-SSENet_train_avg_acc_card1_kpi = AccKpi('cdssmNet_train_avg_acc_card1', 0.01, 0, actived=True)
+SSENet_train_avg_acc_card1_kpi = AccKpi('SSENet_train_avg_acc_card1', 0.01, 0, actived=True)
 
 tracking_kpis = [
     cdssmNet_each_pass_duration_card1_kpi,
