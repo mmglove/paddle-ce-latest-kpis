@@ -25,6 +25,7 @@ FLAGS_benchmark=true  python train.py --is_local 1 --cloud_train 0 --train_data_
 cat log_cpu8thread8 | python _ce.py
 
 #infer
+pip install mmh3
 model='dnn_infer'
 python infer.py --model_path models/pass-0/ --data_path data/raw/train.txt >dnn_infer.log 2>&1
 if [ $? -ne 0 ];then
