@@ -42,16 +42,16 @@ python -u ./slim/prune/train_prune.py \
 --cfg configs/cityscape_fast_scnn.yaml \
 --use_gpu \
 --do_eval \
-BATCH_SIZE 16 \
+BATCH_SIZE 7 \
 SLIM.PRUNE_PARAMS 'learning_to_downsample/weights,learning_to_downsample/dsconv1/pointwise/weights,learning_to_downsample/dsconv2/pointwise/weights' \
 SLIM.PRUNE_RATIOS '[0.1,0.1,0.1]' \
 TRAIN.SNAPSHOT_EPOCH 1 \
 SOLVER.NUM_EPOCHS 1
 }
 CUDA_VISIBLE_DEVICES=${cudaid1} seg_prune_Fast_SCNN 1>seg_prune_Fast_SCNN_1card 2>&1
-cat seg_prune_Fast_SCNN_1card |grep image=500 |awk -F ' |=' 'END{print "kpis\tseg_prune_Fast_SCNN_acc_1card\t"$4"\tkpis\tseg_prune_Fast_SCNN_IoU_1card\t"$6}' | python _ce.py
+cat seg_prune_Fast_SCNN_1card |grep image=50 |awk -F ' |=' 'END{print "kpis\tseg_prune_Fast_SCNN_acc_1card\t"$4"\tkpis\tseg_prune_Fast_SCNN_IoU_1card\t"$6}' | python _ce.py
 CUDA_VISIBLE_DEVICES=${cudaid8} seg_prune_Fast_SCNN 1>seg_prune_Fast_SCNN_8card 2>&1
-cat seg_prune_Fast_SCNN_8card |grep image=500 |awk -F ' |=' 'END{print "kpis\tseg_prune_Fast_SCNN_acc_8card\t"$4"\tkpis\tseg_prune_Fast_SCNN_IoU_8card\t"$6}' | python _ce.py
+cat seg_prune_Fast_SCNN_8card |grep image=50 |awk -F ' |=' 'END{print "kpis\tseg_prune_Fast_SCNN_acc_8card\t"$4"\tkpis\tseg_prune_Fast_SCNN_IoU_8card\t"$6}' | python _ce.py
 
 # 3.2 seg/prune eval
 model=seg_prune_Fast_SCNN_eval

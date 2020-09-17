@@ -47,6 +47,12 @@ prune_fpgm_v1_f50_acc_top5_gpu1_kpi = AccKpi('prune_fpgm_v1_f50_acc_top5_gpu1', 
 prune_fpgm_v1_f50_acc_top1_gpu8_kpi = AccKpi('prune_fpgm_v1_f50_acc_top1_gpu8', 0.02, 0, actived=True)
 prune_fpgm_v1_f50_acc_top5_gpu8_kpi = AccKpi('prune_fpgm_v1_f50_acc_top5_gpu8', 0.02, 0, actived=True)
 
+prune_fpgm_v2_f50_acc_top1_gpu1_kpi = AccKpi('prune_fpgm_v2_f50_acc_top1_gpu1', 0.02, 0, actived=True)
+prune_fpgm_v2_f50_acc_top5_gpu1_kpi = AccKpi('prune_fpgm_v2_f50_acc_top5_gpu1', 0.02, 0, actived=True)
+prune_fpgm_v2_f50_acc_top1_gpu8_kpi = AccKpi('prune_fpgm_v2_f50_acc_top1_gpu8', 0.02, 0, actived=True)
+prune_fpgm_v2_f50_acc_top5_gpu8_kpi = AccKpi('prune_fpgm_v2_f50_acc_top5_gpu8', 0.02, 0, actived=True)
+
+
 prune_fpgm_resnet34_f50_acc_top1_gpu1_kpi = AccKpi('prune_fpgm_resnet34_f50_acc_top1_gpu1', 0.02, 0, actived=True)
 prune_fpgm_resnet34_f50_acc_top5_gpu1_kpi = AccKpi('prune_fpgm_resnet34_f50_acc_top5_gpu1', 0.02, 0, actived=True)
 prune_fpgm_resnet34_f50_acc_top1_gpu8_kpi = AccKpi('prune_fpgm_resnet34_f50_acc_top1_gpu8', 0.02, 0, actived=True)
@@ -90,6 +96,10 @@ tracking_kpis = [
     prune_fpgm_v1_f50_acc_top5_gpu1_kpi,
     prune_fpgm_v1_f50_acc_top1_gpu8_kpi,
     prune_fpgm_v1_f50_acc_top5_gpu8_kpi,
+    prune_fpgm_v2_f50_acc_top1_gpu1_kpi,
+    prune_fpgm_v2_f50_acc_top5_gpu1_kpi,
+    prune_fpgm_v2_f50_acc_top1_gpu8_kpi,
+    prune_fpgm_v2_f50_acc_top5_gpu8_kpi,
     prune_fpgm_resnet34_f50_acc_top1_gpu1_kpi,
     prune_fpgm_resnet34_f50_acc_top5_gpu1_kpi,
     prune_fpgm_resnet34_f50_acc_top1_gpu8_kpi,

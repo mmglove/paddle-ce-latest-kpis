@@ -235,6 +235,43 @@ python eval.py --model "MobileNet" --data "imagenet" --model_path "./fpgm_mobile
 print_info $? ${model}
 
 cd ${current_dir}/demo/prune
+slim_prune_fpgm_v2(){
+#v2 -50%
+python train.py \
+    --model="MobileNetV2" \
+    --pretrained_model="../pretrain/MobileNetV2_pretrained" \
+    --data="imagenet" \
+    --pruned_ratio=0.325 \
+    --lr=0.001 \
+    --num_epochs=2 \
+    --test_period=1 \
+    --step_epochs 30 60 80 \
+    --l2_decay=1e-4 \
+    --lr_strategy="piecewise_decay" \
+    --criterion="geometry_median" \
+    --model_path="./output/fpgm_mobilenetv2_models" \
+    --save_inference True
+}
+CUDA_VISIBLE_DEVICES=${cudaid1} slim_prune_fpgm_v2 >${current_dir}/slim_prune_fpgm_v2_f50_T_1card 2>&1
+cd ${current_dir}
+cat slim_prune_fpgm_v2_f50_T_1card |grep Final |awk -F ' ' 'END{print "kpis\tprune_fpgm_v2_f50_acc_top1_gpu1\t"$8"\nkpis\tprune_fpgm_v2_f50_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
+cd ${current_dir}/demo/prune
+CUDA_VISIBLE_DEVICES=${cudaid8} slim_prune_fpgm_v2 >${current_dir}/slim_prune_fpgm_v2_f50_T_8card 2>&1
+# for lite uncombined
+mkdir slim_prune_fpgm_v2_f50_uncombined
+cp ./fpgm_mobilenetv2_models/infer_models/0/* ./slim_prune_fpgm_v2_f50_uncombined/
+copy_for_lite slim_prune_fpgm_v2_f50_uncombined ${models_from_train}
+cd ${current_dir}
+cat slim_prune_fpgm_v2_f50_T_8card |grep Final |awk -F ' ' 'END{print "kpis\tprune_fpgm_v2_f50_acc_top1_gpu8\t"$8"\nkpis\tprune_fpgm_v2_f50_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
+# 3.2.2 prune eval
+cd ${current_dir}/demo/prune
+model=slim_prune_fpgm_v2_eval
+python eval.py --model "MobileNetV2" --data "imagenet" \
+--model_path "./output/fpgm_mobilenetv2_models/0" >${log_path}/${model} 2>&1
+print_info $? ${model}
+
+
+cd ${current_dir}/demo/prune
 slim_prune_fpgm_resnet34(){
 python train.py \
     --model="ResNet34" \
@@ -390,3 +427,28 @@ model=slim_darts_visualize_pcdarts
 python visualize.py PC_DARTS > ${log_path}/${model} 2>&1
 print_info $? ${model}
 
+# 6 slimfacenet
+slimfacenet(){
+cd ${current_dir}/demo/slimfacenet
+ln -s ${dataset_path}/slimfacenet/CASIA
+ln -s ${dataset_path}/slimfacenet/lfw
+model=slim_slimfacenet_B75_train
+CUDA_VISIBLE_DEVICES=${cudaid1} nohup python -u train_eval.py \
+--train_data_dir=./CASIA/ --test_data_dir=./lfw/ \
+--action train --model=SlimFaceNet_B_x0_75 \
+--start_epoch 0 --total_epoch 1 >${log_path}/${model} 2>&1
+print_info $? ${model}
+
+model=slim_slimfacenet_B75_quan
+CUDA_VISIBLE_DEVICES=${cudaid1} python train_eval.py \
+--action quant --train_data_dir=./CASIA/ \
+--test_data_dir=./lfw/  >${log_path}/${model} 2>&1
+print_info $? ${model}
+
+model=slim_slimfacenet_B75_eval
+CUDA_VISIBLE_DEVICES=${cudaid1} python train_eval.py \
+--action test --train_data_dir=./CASIA/ \
+--test_data_dir=./lfw/ >${log_path}/${model} 2>&1
+print_info $? ${model}
+}
+slimfacenet

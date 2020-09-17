@@ -13,4 +13,5 @@ if [ -d "demo/pretrain" ];then
 fi
 ln -s ${dataset_path}/slim/slim_pretrain demo/pretrain
 
+
 ./.run_ce.sh
