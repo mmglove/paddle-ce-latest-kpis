@@ -2,17 +2,14 @@
 
 rm -rf *_factor.txt
 export current_dir=$PWD
-#  for lite models path
-if [ ! -d "/ssd2/models_from_train" ];then
-	mkdir /ssd2/models_from_train
-fi
-export models_from_train=/ssd2/models_from_train
 
 print_info(){
 if [ $1 -ne 0 ];then
-    echo -e "\033[31m $2_FAIL \033[0m"
+    mv ${log_path}/$2 ${log_path}/$2_FAIL.log
+    echo -e "\033[31m ${log_path}/$2_FAIL \033[0m"
 else
-    echo -e "\033[32m $2_SUCCESS \033[0m"
+    mv ${log_path}/$2 ${log_path}/$2_SUCCESS.log
+    echo -e "\033[32m ${log_path}/$2_SUCCESS \033[0m"
 fi
 }
 #copy_for_lite ${model_name} ${models_from_train}

@@ -1,26 +1,12 @@
 #!/bin/bash
 rm -rf *_factor.txt
 export current_dir=$PWD
-#  for lite models path
-if [ ! -d "/ssd2/models_from_train" ];then
-	mkdir /ssd2/models_from_train
-fi
-export models_from_train=/ssd2/models_from_train
-#set log dir
-cd ${current_dir}
-if [ -d "ce_logs" ];then
-    rm -rf ce_logs
-fi
-mkdir ce_logs && cd ce_logs
-mkdir SUCCESS
-mkdir FAIL
-log_path=${current_dir}"/ce_logs"
 print_info(){
 if [ $1 -ne 0 ];then
-    mv ${log_path}/$2 ${log_path}/$2_FAIL
+    mv ${log_path}/$2 ${log_path}/$2_FAIL.log
     echo -e "\033[31m ${log_path}/$2_FAIL \033[0m"
 else
-    mv ${log_path}/$2 ${log_path}/$2_SUCCESS
+    mv ${log_path}/$2 ${log_path}/$2_SUCCESS.log
     echo -e "\033[32m ${log_path}/$2_SUCCESS \033[0m"
 fi
 }
@@ -76,6 +62,20 @@ for i in $(seq 0 2); do
 	    mv  saved_models ${dist_teacher[$i]}_${dist_student[$i]}_saved_models
     fi
 done
+
+# 1.2 dml data=cifar100
+cd ${current_dir}/demo/deep_mutual_learning
+ln -s ${dataset_path}/dml/dataset
+model=dml_mv1_mv1_gpu1
+CUDA_VISIBLE_DEVICES=${cudaid1} python dml_train.py --models='mobilenet-mobilenet' --epochs 5 --batch_size 64 >${current_dir}/${model} 2>&1
+cd ${current_dir}
+cat ${current_dir}/${model}|grep best_valid_acc |awk -F ' ' 'END{print "kpis\t""'dml_mv1_mv1_gpu1_best_valid_acc'""\t"$11}' | python _ce.py
+model=dml_mv1_res50_gpu1
+CUDA_VISIBLE_DEVICES=${cudaid1} python dml_train.py --models='mobilenet-resnet50' --epochs 5 --batch_size 64 >${current_dir}/${model} 2>&1
+cd ${current_dir}
+cat ${current_dir}/${model}|grep best_valid_acc |awk -F ' ' 'END{print "kpis\t""'dml_mv1_res50_gpu1_best_valid_acc'""\t"$11}' | python _ce.py
+
+
 
 # 2.1 quant/quant_aware
 cd ${current_dir}/demo/quant/quant_aware
@@ -176,6 +176,63 @@ print_info $? ${model}
 mkdir slim_quan_MobileNet_post_2_combined
 cp ./quant_model_train/MobileNet/* ./slim_quan_MobileNet_post_2_combined/
 copy_for_lite slim_quan_MobileNet_post_2_combined ${models_from_train}
+
+# 2.4 pact_quant_aware
+# pact_quant_aware MobileNetV3
+cd ${current_dir}/demo/quant/pact_quant_aware
+CUDA_VISIBLE_DEVICES=${cudaid1} python train.py --model MobileNetV3_large_x1_0 \
+--pretrained_model ../../pretrain/MobileNetV3_large_x1_0_ssld_pretrained \
+--num_epochs 1 --lr 0.0001 --use_pact True --batch_size 64 --lr_strategy=piecewise_decay \
+--step_epochs 1 --l2_decay 1e-5  >${current_dir}/pact_quant_aware_mv3_1card 2>&1
+cd ${current_dir}
+cat pact_quant_aware_mv3_1card |grep Final |awk -F ' ' 'END{print "kpis\tpact_quant_aware_mv3_acc_top1_gpu1\t"$8"\nkpis\tpact_quant_aware_mv3_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
+cd ${current_dir}/demo/quant/pact_quant_aware
+CUDA_VISIBLE_DEVICES=${cudaid8} python train.py --model MobileNetV3_large_x1_0 \
+--pretrained_model ../../pretrain/MobileNetV3_large_x1_0_ssld_pretrained \
+--num_epochs 1 --lr 0.0001 --use_pact True --batch_size 128 --lr_strategy=piecewise_decay \
+--step_epochs 1 --l2_decay 1e-5 >${current_dir}/pact_quant_aware_mv3_8card 2>&1
+cd ${current_dir}
+cat pact_quant_aware_mv3_8card |grep Final |awk -F ' ' 'END{print "kpis\tpact_quant_aware_mv3_acc_top1_gpu8\t"$8"\nkpis\tpact_quant_aware_mv3_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
+# quantization_models
+cd ${current_dir}/demo/quant/pact_quant_aware
+mkdir slim_pact_quant_aware_mv3_combined
+cp ./quantization_models/MobileNetV3_large_x1_0/act_moving_average_abs_max_w_channel_wise_abs_max/float/* ./slim_pact_quant_aware_mv3_combined/
+mv ./slim_pact_quant_aware_mv3_combined/model ./slim_pact_quant_aware_mv3_combined/__model__
+mv ./slim_pact_quant_aware_mv3_combined/params ./slim_pact_quant_aware_mv3_combined/__params__
+#for lite
+copy_for_lite slim_pact_quant_aware_mv3_combined ${models_from_train}
+if [ -d "quantization_models" ];then
+    mv  quantization_models slim_pact_quant_aware_mv3_combined
+fi
+
+# pact_quant_aware MobileNetV3_2 (pact quan all)
+cp ${dataset_path}/pact_quant_aware/pact_quan_V3_2_train.py ./
+cd ${current_dir}/demo/quant/pact_quant_aware
+CUDA_VISIBLE_DEVICES=${cudaid1} python pact_quan_V3_2_train.py --model MobileNetV3_large_x1_0 \
+--pretrained_model ../../pretrain/MobileNetV3_large_x1_0_ssld_pretrained \
+--num_epochs 1 --lr 0.0001 --use_pact True --batch_size 64 --lr_strategy=piecewise_decay \
+--step_epochs 1 --l2_decay 1e-5  >${current_dir}/pact_quant_aware_mv3_2_1card 2>&1
+cd ${current_dir}
+cat pact_quant_aware_mv3_2_1card |grep Final |awk -F ' ' 'END{print "kpis\tpact_quant_aware_mv3_2_acc_top1_gpu1\t"$8"\nkpis\tpact_quant_aware_mv3_2_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
+cd ${current_dir}/demo/quant/pact_quant_aware
+CUDA_VISIBLE_DEVICES=${cudaid8} python pact_quan_V3_2_train.py --model MobileNetV3_large_x1_0 \
+--pretrained_model ../../pretrain/MobileNetV3_large_x1_0_ssld_pretrained \
+--num_epochs 1 --lr 0.0001 --use_pact True --batch_size 128 --lr_strategy=piecewise_decay \
+--step_epochs 1 --l2_decay 1e-5  >${current_dir}/pact_quant_aware_mv3_2_8card 2>&1
+cd ${current_dir}
+cat pact_quant_aware_mv3_2_8card |grep Final |awk -F ' ' 'END{print "kpis\tpact_quant_aware_mv3_2_acc_top1_gpu8\t"$8"\nkpis\tpact_quant_aware_mv3_2_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
+# quantization_models
+cd ${current_dir}/demo/quant/pact_quant_aware
+mkdir slim_pact_quant_aware_mv3_2_combined
+cp ./quantization_models/MobileNetV3_large_x1_0/act_moving_average_abs_max_w_channel_wise_abs_max/float/* ./slim_pact_quant_aware_mv3_2_combined/
+mv ./slim_pact_quant_aware_mv3_2_combined/model ./slim_pact_quant_aware_mv3_2_combined/__model__
+mv ./slim_pact_quant_aware_mv3_2_combined/params ./slim_pact_quant_aware_mv3_2_combined/__params__
+#for lite
+copy_for_lite slim_pact_quant_aware_mv3_2_combined ${models_from_train}
+if [ -d "quantization_models" ];then
+    mv  quantization_models slim_pact_quant_aware_mv3_2_combined
+fi
+
 
 #3.1 prune MobileNetV1
 cd ${current_dir}/demo/prune
