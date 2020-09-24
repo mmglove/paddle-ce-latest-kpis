@@ -211,6 +211,10 @@ if [ -d "output" ];then
 	mv  output prune_output
 fi
 
+# 4 nas
+
+
+
 # delete some models for a moment
 delete_models=(dete_quan_yolov3_r34_combined dete_quan_yolov3_r50vd_dcn_obj365_pretrained_coco_combined)
 for model_name in ${delete_models};do
