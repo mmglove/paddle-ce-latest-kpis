@@ -11,14 +11,23 @@ from kpi import AccKpi
 tagspace_epoch_time_cpu_kpi = DurationKpi('tagspace_epoch_time_cpu', 0.02, 0, actived=True)
 tagspace_acc_cpu_kpi = AccKpi('tagspace_acc_cpu', 0.08, 0, actived=True)
 tagspace_loss_cpu_kpi = DurationKpi('tagspace_loss_cpu', 0.02, 0, actived=True)
+tagspace_epoch_time_gpu1_kpi = DurationKpi('tagspace_epoch_time_gpu1', 0.02, 0, actived=True)
+tagspace_acc_gpu1_kpi = AccKpi('tagspace_acc_gpu1', 0.08, 0, actived=True)
+tagspace_loss_gpu1_kpi = DurationKpi('tagspace_loss_gpu1', 0.02, 0, actived=True)
 
 textcnn_epoch_time_cpu_kpi = DurationKpi('textcnn_epoch_time_cpu', 0.02, 0, actived=True)
 textcnn_acc_cpu_kpi = AccKpi('textcnn_acc_cpu', 0.08, 0, actived=True)
 textcnn_loss_cpu_kpi = DurationKpi('textcnn_loss_cpu', 0.02, 0, actived=True)
+textcnn_epoch_time_gpu1_kpi = DurationKpi('textcnn_epoch_time_gpu1', 0.02, 0, actived=True)
+textcnn_acc_gpu1_kpi = AccKpi('textcnn_acc_gpu1', 0.08, 0, actived=True)
+textcnn_loss_gpu1_kpi = DurationKpi('textcnn_loss_gpu1', 0.02, 0, actived=True)
 
 textcnn_pretrain_epoch_time_cpu_kpi = DurationKpi('textcnn_pretrain_epoch_time_cpu', 0.02, 0, actived=True)
 textcnn_pretrain_acc_cpu_kpi = AccKpi('textcnn_pretrain_acc_cpu', 0.08, 0, actived=True)
 textcnn_pretrain_loss_cpu_kpi = DurationKpi('textcnn_pretrain_loss_cpu', 0.02, 0, actived=True)
+textcnn_pretrain_epoch_time_gpu1_kpi = DurationKpi('textcnn_pretrain_epoch_time_gpu1', 0.02, 0, actived=True)
+textcnn_pretrain_acc_gpu1_kpi = AccKpi('textcnn_pretrain_acc_gpu1', 0.08, 0, actived=True)
+textcnn_pretrain_loss_gpu1_kpi = DurationKpi('textcnn_pretrain_loss_gpu1', 0.02, 0, actived=True)
 
 tracking_kpis = [
     tagspace_epoch_time_cpu_kpi,
@@ -29,7 +38,16 @@ tracking_kpis = [
     textcnn_loss_cpu_kpi,
     textcnn_pretrain_epoch_time_cpu_kpi,
     textcnn_pretrain_acc_cpu_kpi,
-    textcnn_pretrain_loss_cpu_kpi
+    textcnn_pretrain_loss_cpu_kpi,
+    tagspace_epoch_time_gpu1_kpi,
+    tagspace_acc_gpu1_kpi,
+    tagspace_loss_gpu1_kpi,
+    textcnn_epoch_time_gpu1_kpi,
+    textcnn_acc_gpu1_kpi,
+    textcnn_loss_gpu1_kpi,
+    textcnn_pretrain_epoch_time_gpu1_kpi,
+    textcnn_pretrain_acc_gpu1_kpi,
+    textcnn_pretrain_loss_gpu1_kpi
 ]
 
 

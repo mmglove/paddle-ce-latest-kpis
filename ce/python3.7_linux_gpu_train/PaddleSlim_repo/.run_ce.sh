@@ -391,7 +391,7 @@ for i in $(seq 0 0); do
     mkdir slim_prune_${prune_models[$i]}_uncombined
     cp ./models/infer_models/0/* slim_prune_${prune_models[$i]}_uncombined/
     copy_for_lite slim_prune_${prune_models[$i]}_uncombined ${models_from_train}
-    eval_prune ${prune_models[$i]} >prune_${prune_models[$i]}_eval 2>&1
+    eval_prune ${prune_models[$i]} >${log_path}/prune_${prune_models[$i]}_eval 2>&1
     print_info $? prune_${prune_models[$i]}_eval
     if [ -d "models" ];then
 	    mv  models ${prune_models[$i]}_models

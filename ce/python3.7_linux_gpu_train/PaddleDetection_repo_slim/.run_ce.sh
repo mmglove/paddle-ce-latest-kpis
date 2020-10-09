@@ -56,11 +56,11 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 python -u tools/infer.py \
 -c configs/yolov3_mobilenet_v1_voc.yml \
 --infer_img=demo/000000570688.jpg \
 --output_dir=infer_output/ \
---draw_threshold=0.5 >${model} 2>&1
+--draw_threshold=0.5 >${log_path}/${model} 2>&1
 print_info $? ${model}
 #1.3 eval
 model=dete_dist_yolov3_mobilenet_v1_voc_eval
-python -u tools/eval.py -c configs/yolov3_mobilenet_v1_voc.yml >${model} 2>&1
+python -u tools/eval.py -c configs/yolov3_mobilenet_v1_voc.yml >${log_path}/${model} 2>&1
 print_info $? ${model}
 
 if [ -d "output" ];then
@@ -114,7 +114,7 @@ model=dete_quan_eval
 for i in $(seq 0 2); do
 CUDA_VISIBLE_DEVICES=${cudaid1} python slim/quantization/eval.py \
     --not_quant_pattern yolo_output  \
-    -c ./configs/${quan_models[$i]}.yml >${model}_${quan_models[$i]} 2>&1
+    -c ./configs/${quan_models[$i]}.yml >${log_path}/${model}_${quan_models[$i]} 2>&1
 print_info $? ${model}_${quan_models[$i]}
 done
 # 2.3 infer
@@ -123,7 +123,7 @@ for i in $(seq 0 2); do
     CUDA_VISIBLE_DEVICES=${cudaid1} python slim/quantization/infer.py \
     --not_quant_pattern yolo_output \
     -c ./configs/${quan_models[$i]}.yml \
-    --infer_dir ./demo  >${model}_${quan_models[$i]} 2>&1
+    --infer_dir ./demo  >${log_path}/${model}_${quan_models[$i]} 2>&1
 print_info $? ${model}_${quan_models[$i]}
 done
 
@@ -133,7 +133,7 @@ for i in $(seq 0 2); do
     CUDA_VISIBLE_DEVICES=${cudaid1} python slim/quantization/export_model.py \
     --not_quant_pattern yolo_output  \
     -c ./configs/${quan_models[$i]}.yml \
-    --output_dir ./quan_export/dete_quan_${quan_models[$i]} >${model}_${quan_models[$i]} 2>&1
+    --output_dir ./quan_export/dete_quan_${quan_models[$i]} >${log_path}/${model}_${quan_models[$i]} 2>&1
 print_info $? ${model}_${quan_models[$i]}
 mkdir dete_quan_${quan_models[$i]}_combined
 cp ./quan_export/dete_quan_${quan_models[$i]}/float/* ./dete_quan_${quan_models[$i]}_combined/
@@ -178,7 +178,7 @@ for i in $(seq 0 2); do
     python slim/prune/eval.py \
     -c configs/${prune_models[$i]}.yml \
     --pruned_params "yolo_block.0.0.0.conv.weights,yolo_block.0.0.1.conv.weights,yolo_block.0.1.0.conv.weights" \
-    --pruned_ratios="0.2,0.3,0.4" >${model}_${prune_models[$i]} 2>&1
+    --pruned_ratios="0.2,0.3,0.4" >${log_path}/${model}_${prune_models[$i]} 2>&1
 print_info $? ${model}_${prune_models[$i]}
 done
 #3.3 prune export
@@ -187,7 +187,7 @@ for i in $(seq 0 2); do
     python slim/prune/export_model.py \
     -c configs/${prune_models[$i]}.yml \
     --pruned_params "yolo_block.0.0.0.conv.weights,yolo_block.0.0.1.conv.weights,yolo_block.0.1.0.conv.weights" \
-    --pruned_ratios="0.2,0.3,0.4" >${model}_${prune_models[$i]} 2>&1
+    --pruned_ratios="0.2,0.3,0.4" >${log_path}/${model}_${prune_models[$i]} 2>&1
 print_info $? ${model}_${prune_models[$i]}
 # for lite
 mkdir dete_prune_${prune_models[$i]}_combined
@@ -203,7 +203,7 @@ for i in $(seq 0 2); do
     -c configs/${prune_models[$i]}.yml \
     --infer_img=demo/000000570688.jpg \
     --output_dir=infer_output/ \
-    --draw_threshold=0.5 >${model}_${prune_models[$i]} 2>&1
+    --draw_threshold=0.5 >${log_path}/${model}_${prune_models[$i]} 2>&1
 print_info $? ${model}_${prune_models[$i]}
 done
 
