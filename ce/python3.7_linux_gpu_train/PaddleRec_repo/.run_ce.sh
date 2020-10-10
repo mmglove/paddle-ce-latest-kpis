@@ -1,5 +1,5 @@
 #!/bin/bash
-current_dir=`PWD`
+current_dir=$PWD
 export MKL_NUM_THREADS=1
 export OMP_NUM_THREADS=1
 cudaid1=${card1:=2} # use 0-th card as default

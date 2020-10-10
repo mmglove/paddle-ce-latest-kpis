@@ -54,17 +54,17 @@ cat seg_dist_Dv3_xception_mobilenet_8card |grep image=50 |awk -F ' |=' 'END{prin
 # 1.2  dist export
 model=dist_Dv3_xception_mobilenet_export
 CUDA_VISIBLE_DEVICES=${cudaid1} python pdseg/export_model.py --cfg ./slim/distillation/cityscape.yaml \
-TEST.TEST_MODEL ./snapshots/cityscape_mbv2_kd_e100_1/final >${model} 2>&1
+TEST.TEST_MODEL ./snapshots/cityscape_mbv2_kd_e100_1/final >${log_path}/${model} 2>&1
 print_info $? ${model}
 #infer
 # 1.3  dist infer environment
 cd ./deploy/python
 pip install -r requirements.txt
-apt-get install -y libglib2.0-0 libsm6 libxext6 libxrender-dev
+yum install -y libglib2.0-0 libsm6 libxext6 libxrender-dev
 model=dist_Dv3_xception_mobilenet_infer
 cd ${current_dir}
 python ./deploy/python/infer.py --conf=./freeze_model/deploy.yaml \
---input_dir=./test_img --use_pr=True >${model} 2>&1
+--input_dir=./test_img --use_pr=True >${log_path}/${model} 2>&1
 print_info $? ${model}
 mv freeze_model seg_dist_v3_xception_mobilenet
 # lite op not support
@@ -72,7 +72,7 @@ mv freeze_model seg_dist_v3_xception_mobilenet
 # 1.4 dist eval
 model=dist_Dv3_xception_mobilenet_eval
 CUDA_VISIBLE_DEVICES=${cudaid1} python pdseg/eval.py --use_gpu --cfg ./slim/distillation/cityscape.yaml \
-TEST.TEST_MODEL ./snapshots/cityscape_mbv2_kd_e100_1/final >${model} 2>&1
+TEST.TEST_MODEL ./snapshots/cityscape_mbv2_kd_e100_1/final >${log_path}/${model} 2>&1
 print_info $? ${model}
 
 # 2 seg quan
@@ -108,14 +108,14 @@ TEST.TEST_MODEL "./snapshots/mobilenetv2_quant/best_model" \
 MODEL.DEEPLAB.ENCODER_WITH_ASPP False \
 MODEL.DEEPLAB.ENABLE_DECODER False \
 TRAIN.SYNC_BATCH_NORM False \
-SLIM.PREPROCESS True >${model} 2>&1
+SLIM.PREPROCESS True >${log_path}/${model} 2>&1
 print_info $? ${model}
 
 # 2.3 quan infer
 # infer environment
 model=seg_quan_Dv3_v2_infer
 CUDA_VISIBLE_DEVICES=${cudaid1} python ./deploy/python/infer.py --conf=./freeze_model/deploy.yaml \
---input_dir=./test_img --use_pr=False >${model} 2>&1
+--input_dir=./test_img --use_pr=False >${log_path}/${model} 2>&1
 print_info $? ${model}
 # for lite
 mv freeze_model seg_quan_Dv3_v2_combined
@@ -130,7 +130,7 @@ TEST.TEST_MODEL "./snapshots/mobilenetv2_quant/best_model" \
 MODEL.DEEPLAB.ENCODER_WITH_ASPP False \
 MODEL.DEEPLAB.ENABLE_DECODER False \
 TRAIN.SYNC_BATCH_NORM False \
-BATCH_SIZE 7 >${model} 2>&1
+BATCH_SIZE 7 >${log_path}/${model} 2>&1
 print_info $? ${model}
 
 # 3 prune
@@ -157,7 +157,7 @@ model=seg_prune_Fast_SCNN_eval
 CUDA_VISIBLE_DEVICES=${cudaid1} python -u ./slim/prune/eval_prune.py \
 --cfg configs/cityscape_fast_scnn.yaml \
 --use_gpu \
-TEST.TEST_MODEL ./snapshots/cityscape_fast_scnn/final >${model} 2>&1
+TEST.TEST_MODEL ./snapshots/cityscape_fast_scnn/final >${log_path}/${model} 2>&1
 print_info $? ${model}
 
 # 3.3 prune no infer
@@ -177,10 +177,10 @@ SLIM.NAS_SPACE_NAME "MobileNetV2SpaceSeg" \
 SOLVER.NUM_EPOCHS 1
 }
 model=seg_nas_train_1card
-CUDA_VISIBLE_DEVICES=${cudaid1} nas_train 23332 > ${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid1} nas_train 23332 > ${log_path}/${model} 2>&1
 print_info $? ${model}
 model=seg_nas_train_8card
-CUDA_VISIBLE_DEVICES=${cudaid8} nas_train 23333 > ${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid8} nas_train 23333 > ${log_path}/${model} 2>&1
 print_info $? ${model}
 
 # tar models_from_train for lite
