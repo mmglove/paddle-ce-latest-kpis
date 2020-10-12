@@ -489,6 +489,7 @@ slimfacenet(){
 cd ${current_dir}/demo/slimfacenet
 ln -s ${dataset_path}/slimfacenet/CASIA
 ln -s ${dataset_path}/slimfacenet/lfw
+pip install imageio
 model=slim_slimfacenet_B75_train
 CUDA_VISIBLE_DEVICES=${cudaid1} nohup python -u train_eval.py \
 --train_data_dir=./CASIA/ --test_data_dir=./lfw/ \

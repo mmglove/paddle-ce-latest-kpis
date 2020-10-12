@@ -43,7 +43,8 @@ dete_dist_yolov3_v1()
     -c configs/yolov3_mobilenet_v1_voc.yml \
     -t configs/yolov3_r34_voc.yml \
     --save_inference true \
-    -o max_iters=$1 --teacher_pretrained https://paddlemodels.bj.bcebos.com/object_detection/yolov3_r34_voc.tar
+    -o max_iters=$1 YOLOv3Loss.batch_size=7 \
+    --teacher_pretrained https://paddlemodels.bj.bcebos.com/object_detection/yolov3_r34_voc.tar
 }
 CUDA_VISIBLE_DEVICES=${cudaid1} dete_dist_yolov3_v1 8000 >dete_dist_yolov3_v1_1card 2>&1
 cat dete_dist_yolov3_v1_1card|grep Best | awk -F ' ' 'END{print "kpis\tdete_dist_yolov3_v1_bestap_1card\t"$7}'|tr -d ',' | python _ce.py
@@ -153,7 +154,7 @@ dete_prune_yolov3_iter2000()
     --pruned_params="yolo_block.0.0.0.conv.weights,yolo_block.0.0.1.conv.weights,yolo_block.0.1.0.conv.weights,yolo_block.0.1.1.conv.weights,yolo_block.0.2.conv.weights,yolo_block.0.tip.conv.weights,yolo_block.1.0.0.conv.weights,yolo_block.1.0.1.conv.weights,yolo_block.1.1.0.conv.weights,yolo_block.1.1.1.conv.weights,yolo_block.1.2.conv.weights,yolo_block.1.tip.conv.weights,yolo_block.2.0.0.conv.weights,yolo_block.2.0.1.conv.weights,yolo_block.2.1.0.conv.weights,yolo_block.2.1.1.conv.weights,yolo_block.2.2.conv.weights,yolo_block.2.tip.conv.weights" \
     --pruned_ratios="0.1,0.2,0.2,0.2,0.2,0.1,0.2,0.3,0.3,0.3,0.2,0.1,0.3,0.4,0.4,0.4,0.4,0.3" \
     --eval \
-    -o max_iters=2000 pretrain_weights=https://paddlemodels.bj.bcebos.com/object_detection/$1.tar
+    -o max_iters=2000 YOLOv3Loss.batch_size=7 pretrain_weights=https://paddlemodels.bj.bcebos.com/object_detection/$1.tar
 }
 dete_prune_yolov3_iter8000()
 {

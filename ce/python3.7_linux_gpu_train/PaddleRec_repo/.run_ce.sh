@@ -14,8 +14,6 @@ else
 fi
 }
 # contentunderstanding
-mkdir logs && mkdir
-export log_path=logs
 run_con_cpu(){
 cp ${dataset_path}/rec_config/$1_cpu_config.yaml ./
 python -m paddlerec.run -m ./$1_cpu_config.yaml >${log_path}/$1_cpu 2>&1

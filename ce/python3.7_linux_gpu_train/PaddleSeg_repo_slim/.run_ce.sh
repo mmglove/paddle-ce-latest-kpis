@@ -44,7 +44,8 @@ python -m paddle.distributed.launch ./slim/distillation/train_distill.py \
 --cfg ./slim/distillation/cityscape.yaml \
 --teacher_cfg ./slim/distillation/cityscape_teacher.yaml \
 --use_gpu \
---do_eval
+--do_eval \
+-o BATCH_SIZE 7
 }
 CUDA_VISIBLE_DEVICES=${cudaid1} seg_dist_Dv3_xception_mobilenet 1>seg_dist_Dv3_xception_mobilenet_1card 2>&1
 cat seg_dist_Dv3_xception_mobilenet_1card |grep image=50 |awk -F ' |=' 'END{print "kpis\tseg_dist_Dv3_xception_mobilenet_acc_1card\t"$4"\tkpis\tseg_dist_Dv3_xception_mobilenet_IoU_1card\t"$6}' | python _ce.py
@@ -115,7 +116,7 @@ print_info $? ${model}
 # infer environment
 model=seg_quan_Dv3_v2_infer
 CUDA_VISIBLE_DEVICES=${cudaid1} python ./deploy/python/infer.py --conf=./freeze_model/deploy.yaml \
---input_dir=./test_img --use_pr=False >${log_path}/${model} 2>&1
+--input_dir=./test_img >${log_path}/${model} 2>&1
 print_info $? ${model}
 # for lite
 mv freeze_model seg_quan_Dv3_v2_combined
@@ -174,7 +175,8 @@ SLIM.NAS_SEARCH_STEPS 2 \
 SLIM.NAS_START_EVAL_EPOCH -1 \
 SLIM.NAS_IS_SERVER True \
 SLIM.NAS_SPACE_NAME "MobileNetV2SpaceSeg" \
-SOLVER.NUM_EPOCHS 1
+SOLVER.NUM_EPOCHS 1 \
+BATCH_SIZE 7
 }
 model=seg_nas_train_1card
 CUDA_VISIBLE_DEVICES=${cudaid1} nas_train 23332 > ${log_path}/${model} 2>&1
