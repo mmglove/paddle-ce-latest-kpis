@@ -29,8 +29,9 @@ model=tagspace
 cd ${current_dir}/models/contentunderstanding/tagspace
 ln -s ${dataset_path}/textcnn/senta_data senta_data
 run_con_cpu ${model}
-cat ${log_path}/${model}_cpu |grep done |head -10|tail -1 |awk -F ' |,|=' '{print ""'${model}'"_epoch_time_cpu\t"$7"\t"'${model}'"_acc_cpu\t"$12"\t"'${model}'"_loss_cpu\t"$15}'|tr -d '[][]' |python _ce.py
 run_con_gpu ${model}
+cd ${current_dir}
+cat ${log_path}/${model}_cpu |grep done |head -10|tail -1 |awk -F ' |,|=' '{print ""'${model}'"_epoch_time_cpu\t"$7"\t"'${model}'"_acc_cpu\t"$12"\t"'${model}'"_loss_cpu\t"$15}'|tr -d '[][]' |python _ce.py
 cat ${log_path}/${model}_gpu1 |grep done |head -10|tail -1 |awk -F ' |,|=' '{print ""'${model}'"_epoch_time_gpu1\t"$7"\t"'${model}'"_acc_gpu1\t"$12"\t"'${model}'"_loss_gpu1\t"$15}'|tr -d '[][]' |python _ce.py
 
 # 1.2 textcnn
@@ -38,16 +39,20 @@ model=textcnn
 cd ${current_dir}/models/contentunderstanding/textcnn
 ln -s ${dataset_path}/textcnn/senta_data senta_data
 run_con_cpu ${model}
-cat ${log_path}/${model}_cpu |grep done |head -16|tail -1 |awk -F ' |,|=' '{print ""'${model}'"_epoch_time_cpu\t"$7"\t"'${model}'"_acc_cpu\t"$12"\t"'${model}'"_loss_cpu\t"$15}'|tr -d '[][]' |python _ce.py
 run_con_gpu ${model}
+cd ${current_dir}
+cat ${log_path}/${model}_cpu |grep done |head -16|tail -1 |awk -F ' |,|=' '{print ""'${model}'"_epoch_time_cpu\t"$7"\t"'${model}'"_acc_cpu\t"$12"\t"'${model}'"_loss_cpu\t"$15}'|tr -d '[][]' |python _ce.py
 cat ${log_path}/${model}_gpu1 |grep done |head -16|tail -1 |awk -F ' |,|=' '{print ""'${model}'"_epoch_time_gpu1\t"$7"\t"'${model}'"_acc_gpu1\t"$12"\t"'${model}'"_loss_gpu1\t"$15}'|tr -d '[][]' |python _ce.py
+
+
 # 1.3 textcnn_pretrain
 model=textcnn_pretrain
 cd ${current_dir}/models/contentunderstanding/textcnn_pretrain
 ln -s ${dataset_path}/textcnn/senta_data senta_data
 run_con_cpu ${model}
-cat ${log_path}/${model}_cpu |grep done |head -6|tail -1 |awk -F ' |,|=' '{print ""'${model}'"_epoch_time_cpu\t"$7"\t"'${model}'"_acc_cpu\t"$12"\t"'${model}'"_loss_cpu\t"$15}'|tr -d '[][]' |python _ce.py
 run_con_gpu ${model}
+cd ${current_dir}
+cat ${log_path}/${model}_cpu |grep done |head -6|tail -1 |awk -F ' |,|=' '{print ""'${model}'"_epoch_time_cpu\t"$7"\t"'${model}'"_acc_cpu\t"$12"\t"'${model}'"_loss_cpu\t"$15}'|tr -d '[][]' |python _ce.py
 cat ${log_path}/${model}_gpu1 |grep done |head -6|tail -1 |awk -F ' |,|=' '{print ""'${model}'"_epoch_time_gpu1\t"$7"\t"'${model}'"_acc_gpu1\t"$12"\t"'${model}'"_loss_gpu1\t"$15}'|tr -d '[][]' |python _ce.py
 
 # 3.1 multitask (1/3)  esmm
